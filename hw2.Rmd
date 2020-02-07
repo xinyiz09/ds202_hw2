@@ -1,0 +1,121 @@
+---
+title: "ds202_hw2"
+author: "Xinyi Zhu Github username: xinyiz09"
+date: "2/5/2020"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+**Submission instructions**: Create a folder named `ds202_hw2`, and name the RMarkDown file including your solutions `hw2.Rmd` under this folder. For submission, create a GitHub repository named `ds202_hw2` under your account, and push both `hw2.Rmd` and the knitted `hw2.html` to GitHub before the deadline. I will assume you use the same GitHub username as for your HW1 submission. The latest version of your homework appearing on GitHub before the deadline is graded. *It is crucial to follow the exact folder structure and file names*, so that your homework can be reproduced and graded by an automated script. Some questions will require the following answer format.
+
+## R commands
+1. Today's temperature has a high of 24 and a low of 15 degree fahrenheit.  Find the corresponding degress in celsius and storage it in a (single) vector named `cel`. Print the variable.
+2. Create a vector of length 200. The odd entries should be 3 and even entries should be 1. Storage the created in a variable named `vec200` and print.
+3. How many perfect squares are there between 1 and 2001? Storage the answer in a  variable named `numPerfect` and print. You may want to look at `?round`.
+*Question 1*
+```{r}
+## question 1
+convert <- function(Fahr) {
+  cel<- ((Fahr-32)*(5/9))
+  print(cel)
+}
+convert(24.0)
+convert(15.0)
+```
+
+*Question 2*
+```{r}
+## question 2
+vec200 <- 0
+for (i in 1:200){
+  if (i%%2 == 0)
+    vec200[i]<-1
+  else
+    vec200[i]<-3
+  print(vec200[i])
+}
+```
+
+*Question 3*
+```{r}
+## question 3
+cnt<-0
+numPerfect<- 0
+for (i in 1:2001){
+  j<-1
+  while ((j*j)<=i){
+    if ((j*j)==i)
+      cnt = cnt+1
+    j<-j+1
+  }
+  i<-i+1
+}
+print (cnt)
+
+```
+
+## Cars and mileage
+For this part we will use the `mpg` data set, you can access the data by first installing (using `install.packages('ggplot2')`) and then loading the package `ggplot2` (using `library(ggplot2)`) into your R session. The `mpg` data includes information about fuel economy of popular car models
+for the years 1999 and 2008 as collected by the US Environmental Protection Agency. An answer should include a short paragraph of text for the explanation to a (human) reader, together with appropriate R code, outputs, and graphs.
+
+Most exercises are from the ggplot2 book section 2.2.1. You might find it helpful for working on the homework to read through this section. *However, all questions can be solved by using just the basic R graphics functions.*
+
+1. What are the 3 most fuel-efficient models in terms of highway mileage? Storage the data frame (with 3 rows) containing all information of these three cars in a variablemed `top3` and print.
+2. How many different compact models are included in this dataset? Storage the answer in  a variable named `numCompact` and print.
+3. Create a scatterplot of `hwy` and `cty` and describe the relationship. Why are there so few points visible? Explain your findings.
+4. Are cars in 2008 more fuel efficient than cars in 1999? Use graphs *and* summary statistics to answer this question. Explain your findings.
+*Question 1*
+```{r}
+## question 1
+mpg <- ggplot2::mpg
+str(mpg)
+min(mpg$hwy)
+a<- mpg[order(mpg$hwy), ]
+b<- a[1:3,]  ## b means the 3 most fuel- efficient models
+b
+```
+*Question 2*
+```{r}
+## question 2
+unique(mpg$class)
+numCompact<-length(unique(mpg$class))
+numCompact
+```
+*Question 3*
+```{r}
+## question 3
+ggplot(mpg, aes(x=hwy, y=cty)) +
+  geom_point(size=2, shape=23)
+```
+Since the darker points means there exist duplicate points for the same values of hwy, so that the scattor plot only shows fewer points.
+*Question 4*
+```{r}
+## question4
+hwy2008<- mpg[mpg$year == 2008, ]
+hwy2008
+hwy1999<-mpg[mpg$year == 1999, ]
+hwy1999
+summary(hwy2008)
+summary(hwy1999)
+```
+
+```{r}
+graph2008<-hwy2008$hwy
+hist(graph2008)
+boxplot(graph2008)
+```
+
+```{r}
+graph1999<-hwy1999$hwy
+hist(graph1999)
+boxplot(graph1999)
+
+```
+
+Since the boxplots of the highway milage in 2008 is more normally distributed than in cars in 1999, we are hardly say that cars in 2008 are more fuel efficient than cars in 1999.And, there are 2 outliers in 1999's graph. Moreover,mean and median values are pretty similar, and the median and mean hwy value of cars in 2008 is 24 and 23.45, and the median and mean hwy value of cars in 1999 is 25 and 23.43. However, that makes sense to me since there are more cars in 2008 compared to in 1999.
+
+
